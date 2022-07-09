@@ -2,10 +2,52 @@ import Head from "next/head";
 import Link from "next/link";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
-import { isDaySelectable } from "lib/dates";
+import {
+  isDaySelectable,
+  addDayToRange,
+  getDatesBetweenDates,
+} from "lib/dates";
 import { getCost } from "lib/cost";
+import { useState } from "react";
 
 export default function Calendar() {
+  const [from, setFrom] = useState();
+  const [to, setTo] = useState();
+
+  const handleDayClick = (day) => {
+    const range = addDayToRange(day, {
+      from,
+      to,
+    });
+
+    if (!range.to) {
+      if (!isDaySelectable(range.from)) {
+        alert("This date cannot be selected");
+        return;
+      }
+      range.to = range.from;
+    }
+
+    if (range.to && range.from) {
+      if (!isDaySelectable(range.to)) {
+        alert("The end date cannot be selected");
+        return;
+      }
+    }
+
+    const daysInBetween = getDatesBetweenDates(range.from, range.to);
+
+    for (const dayInBetween of daysInBetween) {
+      if (!isDaySelectable(dayInBetween)) {
+        alert("Some days between those 2 dates cannot be selected");
+        return;
+      }
+    }
+
+    setFrom(range.from);
+    setTo(range.to);
+  };
+
   return (
     <div>
       <Head>
@@ -50,6 +92,9 @@ export default function Calendar() {
 
           <div className="pt-6 flex justify-center availability-calendar">
             <DayPicker
+              selected={[from, { from, to }]}
+              modifiers={{ start: from, end: to }}
+              onDayClick={handleDayClick}
               components={{
                 DayContent: (props) => (
                   <div className="relative text-center ">
