@@ -6,9 +6,18 @@ import {
   isDaySelectable,
   addDayToRange,
   getDatesBetweenDates,
+  getBlockedDates,
 } from "lib/dates";
+
 import { getCost } from "lib/cost";
 import { useState } from "react";
+import { getBookedDates } from "lib/bookings";
+
+const yesterday = new Date();
+yesterday.setDate(yesterday.getDate() - 1);
+
+const sixMonthsFromNow = new Date();
+sixMonthsFromNow.setDate(sixMonthsFromNow.getDate() + 30 * 6);
 
 export default function Calendar() {
   const [from, setFrom] = useState();
@@ -95,6 +104,19 @@ export default function Calendar() {
               selected={[from, { from, to }]}
               modifiers={{ start: from, end: to }}
               onDayClick={handleDayClick}
+              disabled={[
+                ...getBlockedDates(),
+                ...getBookedDates(),
+                ,
+                {
+                  from: new Date("0000"),
+                  to: yesterday,
+                },
+                {
+                  from: sixMonthsFromNow,
+                  to: new Date("4000"),
+                },
+              ]}
               components={{
                 DayContent: (props) => (
                   <div className="relative text-center ">
