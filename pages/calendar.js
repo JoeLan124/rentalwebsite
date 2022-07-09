@@ -22,7 +22,7 @@ export default function Calendar() {
 
     if (!range.to) {
       if (!isDaySelectable(range.from)) {
-        alert("This date cannot be selected");
+        console.log("This date cannot be selected");
         return;
       }
       range.to = range.from;
@@ -30,7 +30,7 @@ export default function Calendar() {
 
     if (range.to && range.from) {
       if (!isDaySelectable(range.to)) {
-        alert("The end date cannot be selected");
+        console.log("The end date cannot be selected");
         return;
       }
     }
@@ -39,7 +39,7 @@ export default function Calendar() {
 
     for (const dayInBetween of daysInBetween) {
       if (!isDaySelectable(dayInBetween)) {
-        alert("Some days between those 2 dates cannot be selected");
+        console.log("Some days between those 2 dates cannot be selected");
         return;
       }
     }
